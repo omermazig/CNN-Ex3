@@ -10,11 +10,10 @@ math (delimited with $$).
 
 
 def part1_generation_params():
-    start_seq = ""
-    temperature = .0001
     # TODO: Tweak the parameters to generate a literary masterpiece.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    start_seq = "I must attend his Majesty's command"
+    temperature = 0.4
     # ========================
     return start_seq, temperature
 
@@ -22,52 +21,53 @@ def part1_generation_params():
 part1_q1 = r"""
 **Your answer:**
 
+Splitting into sequences is memory efficient: Training on the entire text at once can take a lot of memory,
+and splitting into smaller sequences allows you to load and process a batch of sequences at a time. This reduces memory requirements.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+In addition, splitting into sequences mitigates the problem of vanishing gradients: When training on long sequences of data,
+we are more prone to suffer from vanishing gradients problem. By splitting the corpus into smaller sequences, we can help
+to mitigate the problem of vanishing gradients, which can lead to improved model performance.
+
+Furthermore, splitting the data into sequences speed up the training: It  allows us to train with batches, which means
+that we can process multiple sequences simultaneously, which improves the training efficiency and enables parallelization
+in the training. 
 
 """
 
 part1_q2 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+It is possible that the generated text shows memory longer than the sequence length, because we use the hidden state and
+we update it at each time-step. The hidden state acts as a form of memory, allowing the network to capture dependencies over time.
+This is why we can keep using the hidden state to create text longer than the sequence length.
 
 """
 
 part1_q3 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+We are not shuffling the order of the batches when training, because each batch has chars in a specific order. The order
+of the chars is important to create the sentences in text. We don't want to change the order of the chars, so that the
+sequence will be correct. 
 
 """
 
 part1_q4 = r"""
 **Your answer:**
 
+1. We use lower the temperature for sampling, because lowering the temperature allows more control on the generated text. 
+Higher temperature produces more diverse output but can be less coherent. In contrast, lower temperature gives more
+deterministic output that matches more the patterns learned during training, but less diverse. In training, we use high
+temperature because it adds more randomness into the training. This encourages exploration of different possibilities
+and prevents the model from getting stuck in a local minimum. In sampling, we use lower temperature because we want to
+control the randomness and generate more deterministic output.  
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. When the temperature is very high the output is diverse because the distribution becomes more uniform. So when the model
+generates a char it chooses it is from a more uniform distribution so it might chooses other plausible results.
+
+3. When the temperature is very low the output is deterministic that matches more the patterns learned during training.
+This is because the distribution becomes less uniform. So when the model generates a char it tends to choose the most
+probable options based on the learned patterns during training.
 
 """
 # ==============
