@@ -68,7 +68,7 @@ class Trainer(abc.ABC):
                 saved_state = torch.load(checkpoint_filename,
                                          map_location=self.device)
                 best_acc = saved_state.get('best_acc', best_acc)
-                epochs_without_improvement =\
+                epochs_without_improvement = \
                     saved_state.get('ewi', epochs_without_improvement)
                 self.model.load_state_dict(saved_state['model_state'])
 
@@ -77,7 +77,7 @@ class Trainer(abc.ABC):
             verbose = False  # pass this to train/test_epoch.
             if epoch % print_every == 0 or epoch == num_epochs - 1:
                 verbose = True
-            self._print(f'--- EPOCH {epoch+1}/{num_epochs} ---', verbose)
+            self._print(f'--- EPOCH {epoch + 1}/{num_epochs} ---', verbose)
 
             # TODO: Train & evaluate for one epoch
             # - Use the train/test_epoch methods.
@@ -88,8 +88,8 @@ class Trainer(abc.ABC):
             actual_num_epochs += 1
             train_result = self.train_epoch(dl_train)
             test_result = self.test_epoch(dl_test)
-            train_loss.append( sum(train_result.losses) / len(train_result.losses) )
-            test_loss.append( sum(test_result.losses) / len(test_result.losses) )
+            train_loss.append(sum(train_result.losses) / len(train_result.losses))
+            test_loss.append(sum(test_result.losses) / len(test_result.losses))
             train_acc.append(train_result.accuracy)
             test_acc.append(test_result.accuracy)
 
@@ -113,7 +113,7 @@ class Trainer(abc.ABC):
                                    model_state=self.model.state_dict())
                 torch.save(saved_state, checkpoint_filename)
                 print(f'*** Saved checkpoint {checkpoint_filename} '
-                      f'at epoch {epoch+1}')
+                      f'at epoch {epoch + 1}')
 
             if post_epoch_fn:
                 post_epoch_fn(epoch, train_result, test_result, verbose)
@@ -291,10 +291,15 @@ class VAETrainer(Trainer):
         x = x.to(self.device)  # Image batch (N,C,H,W)
         # TODO: Train a VAE on one batch.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        output, mu, log_sigma2 = self.model(x)
+        loss, data_loss, _ = self.loss_fn(x, output, mu, log_sigma2)
+
+        self.optimizer.zero_grad()
+        loss.backward()
+        self.optimizer.step()
         # ========================
 
-        return BatchResult(loss.item(), 1/data_loss.item())
+        return BatchResult(loss.item(), 1 / data_loss.item())
 
     def test_batch(self, batch) -> BatchResult:
         x, _ = batch
@@ -303,7 +308,8 @@ class VAETrainer(Trainer):
         with torch.no_grad():
             # TODO: Evaluate a VAE on one batch.
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            output, mu, log_sigma2 = self.model(x)
+            loss, data_loss, _ = self.loss_fn(x, output, mu, log_sigma2)
             # ========================
 
-        return BatchResult(loss.item(), 1/data_loss.item())
+        return BatchResult(loss.item(), 1 / data_loss.item())

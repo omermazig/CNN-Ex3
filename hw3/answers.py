@@ -85,34 +85,41 @@ def part2_vae_hyperparams():
     )
     # TODO: Tweak the hyperparameters to generate a former president.
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    hypers = dict(
+        batch_size=32,
+        h_dim=1024,
+        z_dim=4,
+        x_sigma2=5,
+        learn_rate=0.0005,
+        betas=(0.9, 0.999),
+    )
     # ========================
     return hypers
 
 
 part2_q1 = r"""
-**Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+The hyperparameter $\sigma^2$ acts as the variance of the Gaussian distribution and serves as a regularization factor for the data_loss component of the loss function.
+By adjusting the value of $\sigma^2$, we can control the significance of the data loss relative to the KL-divergence loss. 
+A larger $\sigma^2$ results in a less significant data loss, allowing for a balance between the two loss terms.
 
 """
 
 part2_q2 = r"""
-**Your answer:**
 
+1. The reconstruction loss measures how well the VAE can recreate the original input, 
+while the KL divergence loss helps shape the structure of the latent space.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+2. The KL loss term influences how the data is distributed in the latent space, 
+encouraging it to follow a desired distribution pattern, often a standard Gaussian. 
+This promotes a more organized and useful representation.
+The KL loss term acts as a regularization mechanism that prevents overfitting and helps the model generalize better to unseen data.
+
+3. Using the KL divergence loss in VAE has a benefit of helping us find the right balance between how similar the reconstructed data is to the original input and how well-organized the latent space is.
+By changing the weight of the KL term, 
+we can control how much we prioritize accurate reconstruction versus creating a latent space that is organized and meaningful,
+giving us the flexibility to capture important features.
+
 
 """
 
